@@ -10,7 +10,6 @@ aclocal.m4
 autom4te.cache
 confdefs.h
 config.cache
-config.h
 config.h.in
 config.status
 configure
@@ -36,3 +35,7 @@ stamp-h.in
 *-uninstalled.pc
 .vimrc
 gtk-doc.m4
+
+emcc/*.bc
+emcc/libcairo.a
+

@@ -931,55 +931,65 @@ _cairo_analysis_surface_get_bounding_box (cairo_surface_t *abstract_surface,
 /* null surface type: a surface that does nothing (has no side effects, yay!) */
 
 static cairo_int_status_t
-_return_success (void)
+_paint_empty                  (void                   *surface,
+                                 cairo_operator_t        op,
+                                 const cairo_pattern_t  *source,
+                                 const cairo_clip_t             *clip)
 {
     return CAIRO_STATUS_SUCCESS;
 }
 
-/* These typedefs are just to silence the compiler... */
-typedef cairo_int_status_t
-(*_paint_func)			(void			*surface,
-			         cairo_operator_t	 op,
-				 const cairo_pattern_t	*source,
-				 const cairo_clip_t		*clip);
+static cairo_int_status_t
+_mask_empty                   (void                   *surface,
+                                 cairo_operator_t        op,
+                                 const cairo_pattern_t  *source,
+                                 const cairo_pattern_t  *mask,
+                                 const cairo_clip_t             *clip)
+{
+    return CAIRO_STATUS_SUCCESS;
+}
 
-typedef cairo_int_status_t
-(*_mask_func)			(void			*surface,
-			         cairo_operator_t	 op,
-				 const cairo_pattern_t	*source,
-				 const cairo_pattern_t	*mask,
-				 const cairo_clip_t		*clip);
+static cairo_int_status_t
+_stroke_empty (void                   *abstract_surface,
+                                 cairo_operator_t        op,
+                                 const cairo_pattern_t  *source,
+                                 const cairo_path_fixed_t       *path,
+                                 const cairo_stroke_style_t     *style,
+                                 const cairo_matrix_t           *ctm,
+                                 const cairo_matrix_t           *ctm_inverse,
+                                 double                  tolerance,
+                                 cairo_antialias_t       antialias,
+                                 const cairo_clip_t     *clip)
+{
+    return CAIRO_STATUS_SUCCESS;
+}
 
-typedef cairo_int_status_t
-(*_stroke_func)			(void			*surface,
-			         cairo_operator_t	 op,
-				 const cairo_pattern_t	*source,
-				 const cairo_path_fixed_t	*path,
-				 const cairo_stroke_style_t	*style,
-				 const cairo_matrix_t		*ctm,
-				 const cairo_matrix_t		*ctm_inverse,
-				 double			 tolerance,
-				 cairo_antialias_t	 antialias,
-				 const cairo_clip_t		*clip);
+static cairo_int_status_t
+_fill_empty                   (void                   *surface,
+                                 cairo_operator_t        op,
+                                 const cairo_pattern_t  *source,
+                                 const cairo_path_fixed_t       *path,
+                                 cairo_fill_rule_t       fill_rule,
+                                 double                  tolerance,
+                                 cairo_antialias_t       antialias,
+                                 const cairo_clip_t             *clip)
+{
+    return CAIRO_STATUS_SUCCESS;
+}
 
-typedef cairo_int_status_t
-(*_fill_func)			(void			*surface,
-			         cairo_operator_t	 op,
-				 const cairo_pattern_t	*source,
-				 const cairo_path_fixed_t	*path,
-				 cairo_fill_rule_t	 fill_rule,
-				 double			 tolerance,
-				 cairo_antialias_t	 antialias,
-				 const cairo_clip_t		*clip);
+static cairo_int_status_t
+_show_glyphs_empty            (void                   *surface,
+                                 cairo_operator_t        op,
+                                 const cairo_pattern_t  *source,
+                                 cairo_glyph_t          *glyphs,
+                                 int                     num_glyphs,
+                                 cairo_scaled_font_t    *scaled_font,
+                                 const cairo_clip_t             *clip)
+{
+    return CAIRO_STATUS_SUCCESS;
+}
 
-typedef cairo_int_status_t
-(*_show_glyphs_func)		(void			*surface,
-			         cairo_operator_t	 op,
-				 const cairo_pattern_t	*source,
-				 cairo_glyph_t		*glyphs,
-				 int			 num_glyphs,
-				 cairo_scaled_font_t	*scaled_font,
-				 const cairo_clip_t		*clip);
+
 
 static const cairo_surface_backend_t cairo_null_surface_backend = {
     CAIRO_INTERNAL_SURFACE_TYPE_NULL,
@@ -1006,12 +1016,12 @@ static const cairo_surface_backend_t cairo_null_surface_backend = {
     NULL, /* flush */
     NULL, /* mark_dirty_rectangle */
 
-    (_paint_func) _return_success,	    /* paint */
-    (_mask_func) _return_success,	    /* mask */
-    (_stroke_func) _return_success,	    /* stroke */
-    (_fill_func) _return_success,	    /* fill */
+    _paint_empty,           /* paint */
+    _mask_empty,            /* mask */
+    _stroke_empty,          /* stroke */
+    _fill_empty,            /* fill */
     NULL, /* fill_stroke */
-    (_show_glyphs_func) _return_success,    /* show_glyphs */
+    _show_glyphs_empty,    /* show_glyphs */
     NULL, /* has_show_text_glyphs */
     NULL  /* show_text_glyphs */
 };
