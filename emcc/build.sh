@@ -138,7 +138,7 @@ for src in "${sources[@]}"
 do
   result=${OUT_DIR}/$(basename ${src} .c)'.bc'
   if [ ! -f ${result} ]; then
-    emcc -D HAVE_CONFIG_H -O3 -o ${result} -c -I ${ROOT_DIR}/src -I ${PIXMAN_DIR}/pixman -s USE_FREETYPE=1 ${ROOT_DIR}/${src}
+    emcc -D HAVE_CONFIG_H -O3 -o ${result} -c -I ${ROOT_DIR}/src -I ${PIXMAN_DIR}/pixman -s USE_FREETYPE=1 -s USE_ZLIB=1 -s USE_LIBPNG=1 ${ROOT_DIR}/${src}
     echo ${src} '->' ${result}
   fi
   results=${results}" "${result}
